@@ -1,5 +1,5 @@
 //go:generate packer-sdc mapstructure-to-hcl2 -type Config,DatasourceOutput
-package scaffolding
+package credentials
 
 import (
 	"github.com/hashicorp/hcl/v2/hcldec"
@@ -9,7 +9,8 @@ import (
 )
 
 type Config struct {
-	MockOption string `mapstructure:"mock"`
+	KeepassFile     string `mapstructure:"keepass_file"`
+	KeepassPassword string `mapstructure:"keepass_password"`
 }
 
 type Datasource struct {
@@ -17,8 +18,7 @@ type Datasource struct {
 }
 
 type DatasourceOutput struct {
-	Foo string `mapstructure:"foo"`
-	Bar string `mapstructure:"bar"`
+	Map map[string]string `mapstructure:"map"`
 }
 
 func (d *Datasource) ConfigSpec() hcldec.ObjectSpec {
@@ -38,9 +38,8 @@ func (d *Datasource) OutputSpec() hcldec.ObjectSpec {
 }
 
 func (d *Datasource) Execute() (cty.Value, error) {
-	output := DatasourceOutput{
-		Foo: "foo-value",
-		Bar: "bar-value",
-	}
+	output := DatasourceOutput{}
+	outputMap := map[string]string{}
+	output.Map = outputMap
 	return hcl2helper.HCL2ValueFromConfig(output, d.OutputSpec()), nil
 }

@@ -1,4 +1,4 @@
-module packer-plugin-scaffolding
+module packer-plugin-keepass
 
 go 1.16
 
