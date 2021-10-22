@@ -1,10 +1,6 @@
-data "scaffolding-my-datasource" "test" {
-  mock = "mock-config"
-}
-
-locals {
-  foo = data.scaffolding-my-datasource.test.foo
-  bar = data.scaffolding-my-datasource.test.bar
+data "keepass-credentials" "test" {
+  keepass_file = "example/example.kdbx"
+  keepass_password = "password"
 }
 
 source "null" "basic-example" {
@@ -18,8 +14,8 @@ build {
 
   provisioner "shell-local" {
     inline = [
-      "echo foo: ${local.foo}",
-      "echo bar: ${local.bar}",
+      "echo username1: ${data.keepass-credentials.test.map["2-username"]}",
+      "echo password1: ${data.keepass-credentials.test.map["2-password"]}",
     ]
   }
 }

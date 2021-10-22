@@ -15,10 +15,10 @@ import (
 //go:embed test-fixtures/template.pkr.hcl
 var testDatasourceHCL2Basic string
 
-// Run with: PACKER_ACC=1 go test -count 1 -v ./keepass/data_acc_test.go  -timeout=120m
-func TestAccScaffoldingDatasource(t *testing.T) {
+// Run with: PACKER_ACC=1 go test -count 1 -v ./datasource/credentials/data_acc_test.go  -timeout=120m
+func TestAccKeepassDatasource(t *testing.T) {
 	testCase := &acctest.PluginTestCase{
-		Name: "scaffolding_datasource_basic_test",
+		Name: "keepass_datasource_basic_test",
 		Setup: func() error {
 			return nil
 		},
@@ -26,7 +26,7 @@ func TestAccScaffoldingDatasource(t *testing.T) {
 			return nil
 		},
 		Template: testDatasourceHCL2Basic,
-		Type:     "scaffolding-my-datasource",
+		Type:     "keepass-credentials-datasource",
 		Check: func(buildCommand *exec.Cmd, logfile string) error {
 			if buildCommand.ProcessState != nil {
 				if buildCommand.ProcessState.ExitCode() != 0 {
@@ -46,14 +46,14 @@ func TestAccScaffoldingDatasource(t *testing.T) {
 			}
 			logsString := string(logsBytes)
 
-			fooLog := "null.basic-example: foo: foo-value"
-			barLog := "null.basic-example: bar: bar-value"
+			username2Log := "null.basic-example: username1: Michael321"
+			password2Log := "null.basic-example: password1: 12345"
 
-			if matched, _ := regexp.MatchString(fooLog+".*", logsString); !matched {
-				t.Fatalf("logs doesn't contain expected foo value %q", logsString)
+			if matched, _ := regexp.MatchString(username2Log+".*", logsString); !matched {
+				t.Fatalf("logs doesn't contain expected 2-username value %q", logsString)
 			}
-			if matched, _ := regexp.MatchString(barLog+".*", logsString); !matched {
-				t.Fatalf("logs doesn't contain expected bar value %q", logsString)
+			if matched, _ := regexp.MatchString(password2Log+".*", logsString); !matched {
+				t.Fatalf("logs doesn't contain expected 2-password value %q", logsString)
 			}
 			return nil
 		},
