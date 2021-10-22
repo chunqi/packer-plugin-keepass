@@ -1,11 +1,11 @@
 data "keepass-credentials" "example" {
-  keepass_file = "example.kdbx"
+  keepass_file = "example/example.kdbx"
   keepass_password = "password"
 }
 
 source "file" "example" {
-  content = data.keepass-credentials.example.map["1-username"]
-  target = "username.txt"
+  content = format("%s:%s", data.keepass-credentials.example.map["2-username"], data.keepass-credentials.example.map["2-password"])
+  target = "credentials.txt"
 }
 
 build {
