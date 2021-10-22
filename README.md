@@ -20,7 +20,7 @@ packer {
   required_plugins {
     keepass = {
       version = ">= 0.0.1"
-      source  = "github.com/hashicorp/keepass"
+      source  = "github.com/chunqi/packer-plugin-keepass"
     }
   }
 }
