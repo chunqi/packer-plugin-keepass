@@ -1,3 +1,17 @@
+packer {
+  required_plugins {
+    keepass = {
+      version = ">= 0.0.1"
+      source  = "github.com/chunqi/packer-plugin-keepass"
+    }
+  }
+}
+
+variable "keepass_password" {
+  type = string
+  sensitive = true
+}
+
 data "keepass-credentials" "example" {
   keepass_file = "example/example.kdbx"
   keepass_password = "password"

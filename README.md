@@ -51,6 +51,15 @@ documentation located in the [`docs/`](docs) directory.
 ## Usage
 
 ```
+packer {
+  required_plugins {
+    keepass = {
+      version = ">= 0.0.1"
+      source  = "github.com/chunqi/packer-plugin-keepass"
+    }
+  }
+}
+
 data "keepass-credentials" "example" {
   keepass_file = "example/example.kdbx"
   keepass_password = "password"
@@ -69,6 +78,18 @@ build {
 The `keepass-credentials` custom data source takes in the path to the keepass
 database file and the master password as parameters, and makes available the
 entries within as a map.
+
+The keepass master password can be passed in as either a command line argument
+or as a packer environment variable.
+
+```
+$ packer build -var="keepass_password=password" example/data-var.pkr.hcl
+```
+
+```
+$ export PKR_VAR_keepass_password=password
+$ packer build example/data-var.pkr.hcl
+```
 
 The following map keys are constructed for each entry within the keepass
 database:
@@ -97,39 +118,6 @@ Sample Entry-password: Password
 2-password: 12345
 Sample Entry #2-username: Michael321
 Sample Entry #2-password: 12345
-```
-
-### With variables
-
-```
-variable "keepass_password" {
-  type = string
-}
-
-data "keepass-credentials" "example" {
-  keepass_file = "example/example.kdbx"
-  keepass_password = var.keepass_password
-}
-
-source "file" "example" {
-  content = format("%s:%s", data.keepass-credentials.example.map["2-username"], data.keepass-credentials.example.map["2-password"])
-  target = "credentials.txt"
-}
-
-build {
-  sources = ["sources.file.example"]
-}
-```
-
-The keepass master password can also be passed in as a variable.
-
-```
-$ packer build -var="keepass_password=password" example/data-var.pkr.hcl
-```
-
-```
-$ export PKR_VAR_keepass_password=password
-$ packer build example/data-var.pkr.hcl
 ```
 
 ## Troubleshooting
