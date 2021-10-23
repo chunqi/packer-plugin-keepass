@@ -60,6 +60,11 @@ packer {
   }
 }
 
+variable "keepass_password" {
+  type = string
+  sensitive = true
+}
+
 data "keepass-credentials" "example" {
   keepass_file = "example/example.kdbx"
   keepass_password = "password"
