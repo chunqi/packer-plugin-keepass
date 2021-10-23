@@ -20,7 +20,7 @@ packer {
   required_plugins {
     keepass = {
       version = ">= 0.0.1"
-      source  = "github.com/chunqi/packer-plugin-keepass"
+      source  = "github.com/chunqi/keepass"
     }
   }
 }
@@ -28,7 +28,7 @@ packer {
 
 #### Manual installation
 
-You can find pre-built binary releases of the plugin [here](https://github.com/hashicorp/packer-plugin-keepass/releases).
+You can find pre-built binary releases of the plugin [here](https://github.com/chunqi/packer-plugin-keepass/releases).
 Once you have downloaded the latest archive corresponding to your target OS,
 uncompress it to retrieve the plugin binary file corresponding to your platform.
 To install the plugin, please follow the Packer documentation on
@@ -55,7 +55,7 @@ packer {
   required_plugins {
     keepass = {
       version = ">= 0.0.1"
-      source  = "github.com/chunqi/packer-plugin-keepass"
+      source  = "github.com/chunqi/keepass"
     }
   }
 }
