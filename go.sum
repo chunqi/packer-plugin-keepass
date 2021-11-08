@@ -509,8 +509,8 @@ github.com/stretchr/testify v1.5.1/go.mod h1:5W2xD1RspED5o8YsWQXVCued0rvSQ+mT+I5
 github.com/stretchr/testify v1.6.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
 github.com/stretchr/testify v1.7.0 h1:nwc3DEeHmmLAfoZucVR881uASk0Mfjw8xYJ99tb5CcY=
 github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
-github.com/tobischo/gokeepasslib/v3 v3.2.3 h1:+ShvZwqvK/3qFDzSkkLnLqcZ6N+P5sJGXaAnvHja6Oc=
-github.com/tobischo/gokeepasslib/v3 v3.2.3/go.mod h1:iwxOzUuk/ccA0mitrFC4MovT1p0IRY8EA35L4u1x/ug=
+github.com/tobischo/gokeepasslib/v3 v3.2.4 h1:Dn4o3aFtaJ7aUKAysHJFu2iWcKcOXUfCMi9HyEKWNCk=
+github.com/tobischo/gokeepasslib/v3 v3.2.4/go.mod h1:iwxOzUuk/ccA0mitrFC4MovT1p0IRY8EA35L4u1x/ug=
 github.com/tv42/httpunix v0.0.0-20150427012821-b75d8614f926/go.mod h1:9ESjWnEqriFuLhtthL60Sar/7RFoluCcXsuvEwTV5KM=
 github.com/ugorji/go v1.2.6 h1:tGiWC9HENWE2tqYycIqFTNorMmFRVhNwCpDOpWqnk8E=
 github.com/ugorji/go v1.2.6/go.mod h1:anCg0y61KIhDlPZmnH+so+RQbysYVyDko0IMgJv0Nn0=
