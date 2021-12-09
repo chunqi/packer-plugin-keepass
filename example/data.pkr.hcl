@@ -1,7 +1,7 @@
 packer {
   required_plugins {
     keepass = {
-      version = ">= 0.0.1"
+      version = ">= 0.1.0"
       source  = "github.com/chunqi/keepass"
     }
   }
@@ -18,7 +18,7 @@ data "keepass-credentials" "example" {
 }
 
 source "file" "example" {
-  content = format("%s:%s", data.keepass-credentials.example.map["2-username"], data.keepass-credentials.example.map["2-password"])
+  content = format("%s:%s", data.keepass-credentials.example.map["F1ABA233DAE73E419937F475C593F31C-username"], data.keepass-credentials.example.map["F1ABA233DAE73E419937F475C593F31C-password"])
   target = "credentials.txt"
 }
 
