@@ -19,7 +19,7 @@ Then, run [`packer init`](https://www.packer.io/docs/commands/init).
 packer {
   required_plugins {
     keepass = {
-      version = ">= 0.0.1"
+      version = ">= 0.1.0"
       source  = "github.com/chunqi/keepass"
     }
   }
@@ -54,7 +54,7 @@ documentation located in the [`docs/`](docs) directory.
 packer {
   required_plugins {
     keepass = {
-      version = ">= 0.0.1"
+      version = ">= 0.1.0"
       source  = "github.com/chunqi/keepass"
     }
   }
@@ -71,7 +71,7 @@ data "keepass-credentials" "example" {
 }
 
 source "file" "example" {
-  content = format("%s:%s", data.keepass-credentials.example.map["2-username"], data.keepass-credentials.example.map["2-password"])
+  content = format("%s:%s", data.keepass-credentials.example.map["F1ABA233DAE73E419937F475C593F31C-username"], data.keepass-credentials.example.map["F1ABA233DAE73E419937F475C593F31C-password"])
   target = "credentials.txt"
 }
 
@@ -99,33 +99,28 @@ $ packer build example/data-var.pkr.hcl
 The following map keys are constructed for each entry within the keepass
 database:
 
-* `[index]-username`
-* `[index]-password`
-* `[title]-username`
-* `[title]-password`
+* `<uuid>-username`
+* `<uuid>-password`
+* `<uuid>-title`
 
-`index` is a 1-indexed count of the credential entry within the keepass
-database starting from the root.
+To find the UUID of each credential entry, in Keepass go to **View** ->
+**Configure Columns...** and check the **UUID** column to be displayed.
 
-`title` is the title of the credential entry regardless of its location
-within the database for convenience. Note that this can lead to overwriting if
-multiple credential entries share the same entry title; use the index instead.
+![Keepass displaying UUID](/docs/datasources/keepass-uuid.png)
 
-A newly created Keepass 2 database with sample entries will thus contain the
-following keys and values:
+The example Keepass 2 database (`example/example.kdbx`) with sample entries will
+thus generate the following keys and values:
 
 ```
-1-username: User Name
-1-password: Password
-Sample Entry-username: User Name
-Sample Entry-password: Password
-2-username: Michael321
-2-password: 12345
-Sample Entry #2-username: Michael321
-Sample Entry #2-password: 12345
+F9E8062C3814F943BCBCB6FE81FAAA2F-username: User Name
+F9E8062C3814F943BCBCB6FE81FAAA2F-password: Password
+F9E8062C3814F943BCBCB6FE81FAAA2F-title: Sample Entry
+F1ABA233DAE73E419937F475C593F31C-username: Michael321
+F1ABA233DAE73E419937F475C593F31C-password: 12345
+F1ABA233DAE73E419937F475C593F31C-title: Sample Entry #2
 ```
 
-`example/data-var.pkr.hcl` will generate the following content in
+Building `example/data-var.pkr.hcl` will generate the following output in
 `credentials.txt`:
 
 ```
