@@ -14,7 +14,7 @@ variable "keepass_password" {
 
 data "keepass-credentials" "example" {
   keepass_file = "example/example.kdbx"
-  keepass_password = "password"
+  keepass_password = "${var.keepass_password}"
 }
 
 source "file" "example" {
