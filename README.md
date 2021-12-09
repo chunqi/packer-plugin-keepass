@@ -67,7 +67,7 @@ variable "keepass_password" {
 
 data "keepass-credentials" "example" {
   keepass_file = "example/example.kdbx"
-  keepass_password = "password"
+  keepass_password = "${var.keepass_password}"
 }
 
 source "file" "example" {
@@ -111,7 +111,7 @@ database starting from the root.
 within the database for convenience. Note that this can lead to overwriting if
 multiple credential entries share the same entry title; use the index instead.
 
-A newly created Keepass 2 database with sample entries will thus generate the
+A newly created Keepass 2 database with sample entries will thus contain the
 following keys and values:
 
 ```
@@ -123,6 +123,13 @@ Sample Entry-password: Password
 2-password: 12345
 Sample Entry #2-username: Michael321
 Sample Entry #2-password: 12345
+```
+
+`example/data-var.pkr.hcl` will generate the following content in
+`credentials.txt`:
+
+```
+Michael321:12345
 ```
 
 ## Troubleshooting
