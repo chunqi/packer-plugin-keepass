@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
+	"github.com/google/uuid"
 	"github.com/hashicorp/hcl/v2/hcldec"
 	"github.com/hashicorp/packer-plugin-sdk/hcl2helper"
 	"github.com/hashicorp/packer-plugin-sdk/template/config"
@@ -73,17 +75,20 @@ func walk(credentials map[string]string, group gokeepasslib.Group) {
 	// iterate through entries
 	for i := range group.Entries {
 		entry := group.Entries[i]
-		username := entry.GetContent("UserName")
-		password := entry.GetPassword()
-		title := entry.GetTitle()
-		nextIndex := (len(credentials) / 4) + 1
-		log.Printf("index: %d, title: %s, username: %s", nextIndex, title, username)
-		// add 1-indexed keys
-		credentials[fmt.Sprintf("%d-username", nextIndex)] = username
-		credentials[fmt.Sprintf("%d-password", nextIndex)] = password
-		// add entry title as a key
-		credentials[fmt.Sprintf("%s-username", title)] = username
-		credentials[fmt.Sprintf("%s-password", title)] = password
+		// parse uuid bytes and convert to keepass UI format
+		// no dashes and uppercase
+		entry_uuid, err := uuid.FromBytes(entry.UUID[:])
+		entry_uuid_string := strings.ReplaceAll(strings.ToUpper(entry_uuid.String()), "-", "")
+		if err != nil {
+			log.Println(err)
+		} else {
+			username := entry.GetContent("UserName")
+			password := entry.GetPassword()
+			title := entry.GetTitle()
+			credentials[fmt.Sprintf("%s-title", entry_uuid_string)] = title
+			credentials[fmt.Sprintf("%s-username", entry_uuid_string)] = username
+			credentials[fmt.Sprintf("%s-password", entry_uuid_string)] = password
+		}
 	}
 
 	// iterate through subgroups
