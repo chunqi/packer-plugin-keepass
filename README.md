@@ -54,7 +54,7 @@ documentation located in the [`docs/`](docs) directory.
 packer {
   required_plugins {
     keepass = {
-      version = ">= 0.1.0"
+      version = ">= 0.1.1"
       source  = "github.com/chunqi/keepass"
     }
   }
@@ -71,7 +71,7 @@ data "keepass-credentials" "example" {
 }
 
 source "file" "example" {
-  content = format("%s:%s", data.keepass-credentials.example.map["F1ABA233DAE73E419937F475C593F31C-username"], data.keepass-credentials.example.map["F1ABA233DAE73E419937F475C593F31C-password"])
+  content = format("%s:%s", data.keepass-credentials.example.map["F1ABA233DAE73E419937F475C593F31C-username"], data.keepass-credentials.example.map["/example/Sample Entry #2-password"])
   target = "credentials.txt"
 }
 
@@ -99,11 +99,19 @@ $ packer build example/data-var.pkr.hcl
 The following map keys are constructed for each entry within the keepass
 database:
 
+* `<path-to-entry>/<title>-username`
+* `<path-to-entry>/<title>-password`
 * `<uuid>-username`
 * `<uuid>-password`
 * `<uuid>-title`
 
-To find the UUID of each credential entry, in Keepass go to **View** ->
+The `path-to-entry` is the names of the group (folder) names combined with the
+`/` symbol.
+
+The plugin will warn of ambiguous paths present in the keepass database in the
+packer log. Note that only the first instance of any path will be accessible.
+
+To find the `uuid` of each credential entry, in Keepass go to **View** ->
 **Configure Columns...** and check the **UUID** column to be displayed.
 
 ![Keepass displaying UUID](/docs/datasources/keepass-uuid.png)
@@ -112,6 +120,10 @@ The example Keepass 2 database (`example/example.kdbx`) with sample entries will
 thus generate the following keys and values:
 
 ```
+/example/Sample Entry-username: User Name
+/example/Sample Entry-password: Password
+/example/Sample Entry #2-username: Michael321
+/example/Sample Entry #2-password: 12345
 F9E8062C3814F943BCBCB6FE81FAAA2F-username: User Name
 F9E8062C3814F943BCBCB6FE81FAAA2F-password: Password
 F9E8062C3814F943BCBCB6FE81FAAA2F-title: Sample Entry
