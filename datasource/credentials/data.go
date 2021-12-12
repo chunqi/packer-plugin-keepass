@@ -48,7 +48,6 @@ func (d *Datasource) Execute() (cty.Value, error) {
 	output := DatasourceOutput{}
 	emptyOutput := hcl2helper.HCL2ValueFromConfig(output, d.OutputSpec())
 	credentials := map[string]string{}
-
 	// open the keepass 2 database and decrypt with password
 	file, err := os.Open(d.config.KeepassFile)
 	if err != nil {
@@ -61,38 +60,48 @@ func (d *Datasource) Execute() (cty.Value, error) {
 	if err != nil {
 		return emptyOutput, err
 	}
-
 	// walk the database tree and collect credentials
 	db.UnlockProtectedEntries()
 	for i := range db.Content.Root.Groups {
-		walk(credentials, db.Content.Root.Groups[i])
+		walk("", credentials, db.Content.Root.Groups[i])
 	}
 	output.Map = credentials
 	return hcl2helper.HCL2ValueFromConfig(output, d.OutputSpec()), nil
 }
 
-func walk(credentials map[string]string, group gokeepasslib.Group) {
-	// iterate through entries
+func walk(path string, credentials map[string]string, group gokeepasslib.Group) {
+	// construct path for group
+	groupPath := path + "/" + group.Name
 	for i := range group.Entries {
 		entry := group.Entries[i]
-		// parse uuid bytes and convert to keepass UI format
-		// no dashes and uppercase
-		entry_uuid, err := uuid.FromBytes(entry.UUID[:])
-		entry_uuid_string := strings.ReplaceAll(strings.ToUpper(entry_uuid.String()), "-", "")
+		username := entry.GetContent("UserName")
+		password := entry.GetPassword()
+		title := entry.GetTitle()
+		// group path keyed entries
+		// warn in log if an ambiguous path is encountered
+		pathUsername := fmt.Sprintf("%s/%s-username", groupPath, title)
+		pathPassword := fmt.Sprintf("%s/%s-password", groupPath, title)
+		if _, keyExists := credentials[pathUsername]; keyExists {
+			log.Println(fmt.Sprintf("Ambiguous path for entry: %s/%s", groupPath, title))
+			log.Println("Only the first entry with this path will be accessible")
+		} else {
+			credentials[pathUsername] = username
+			credentials[pathPassword] = password
+		}
+		// uuid keyed entries
+		// parse uuid bytes and convert to keepass UI format - no dashes and uppercase
+		entryUUID, err := uuid.FromBytes(entry.UUID[:])
+		entryUUIDString := strings.ReplaceAll(strings.ToUpper(entryUUID.String()), "-", "")
 		if err != nil {
 			log.Println(err)
 		} else {
-			username := entry.GetContent("UserName")
-			password := entry.GetPassword()
-			title := entry.GetTitle()
-			credentials[fmt.Sprintf("%s-title", entry_uuid_string)] = title
-			credentials[fmt.Sprintf("%s-username", entry_uuid_string)] = username
-			credentials[fmt.Sprintf("%s-password", entry_uuid_string)] = password
+			credentials[fmt.Sprintf("%s-title", entryUUIDString)] = title
+			credentials[fmt.Sprintf("%s-username", entryUUIDString)] = username
+			credentials[fmt.Sprintf("%s-password", entryUUIDString)] = password
 		}
 	}
-
 	// iterate through subgroups
 	for i := range group.Groups {
-		walk(credentials, group.Groups[i])
+		walk(groupPath, credentials, group.Groups[i])
 	}
 }
