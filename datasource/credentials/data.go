@@ -82,11 +82,12 @@ func walk(path string, credentials map[string]string, group gokeepasslib.Group) 
 		pathUsername := fmt.Sprintf("%s/%s-username", groupPath, title)
 		pathPassword := fmt.Sprintf("%s/%s-password", groupPath, title)
 		if _, keyExists := credentials[pathUsername]; keyExists {
-			log.Println(fmt.Sprintf("Ambiguous path for entry: %s/%s", groupPath, title))
-			log.Println("Only the first entry with this path will be accessible")
+			log.Println(fmt.Sprintf("[WARNING] Ambiguous path for entry: %s/%s", groupPath, title))
+			log.Println("[WARNING] Only the first entry with this path will be accessible")
 		} else {
 			credentials[pathUsername] = username
 			credentials[pathPassword] = password
+			log.Println(fmt.Sprintf("Group path: %s/%s-<username/password>", groupPath, title))
 		}
 		// uuid keyed entries
 		// parse uuid bytes and convert to keepass UI format - no dashes and uppercase
@@ -98,6 +99,7 @@ func walk(path string, credentials map[string]string, group gokeepasslib.Group) 
 			credentials[fmt.Sprintf("%s-title", entryUUIDString)] = title
 			credentials[fmt.Sprintf("%s-username", entryUUIDString)] = username
 			credentials[fmt.Sprintf("%s-password", entryUUIDString)] = password
+			log.Println(fmt.Sprintf("UUID path: %s-<title/username/password>", entryUUIDString))
 		}
 	}
 	// iterate through subgroups
