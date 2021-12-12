@@ -19,7 +19,7 @@ Then, run [`packer init`](https://www.packer.io/docs/commands/init).
 packer {
   required_plugins {
     keepass = {
-      version = ">= 0.1.0"
+      version = ">= 0.1.1"
       source  = "github.com/chunqi/keepass"
     }
   }
