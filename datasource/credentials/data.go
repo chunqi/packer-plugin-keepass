@@ -74,36 +74,42 @@ func walk(path string, credentials map[string]string, group gokeepasslib.Group) 
 	groupPath := path + "/" + group.Name
 	for i := range group.Entries {
 		entry := group.Entries[i]
-		username := entry.GetContent("UserName")
-		password := entry.GetPassword()
+		// each entry will be keyed by:
+		// - group path (if not ambiguous)
+		// - uuid (always)
 		title := entry.GetTitle()
-		// group path keyed entries
-		// warn in log if an ambiguous path is encountered
-		pathUsername := fmt.Sprintf("%s/%s-username", groupPath, title)
-		pathPassword := fmt.Sprintf("%s/%s-password", groupPath, title)
-		if _, keyExists := credentials[pathUsername]; keyExists {
-			log.Println(fmt.Sprintf("[WARNING] Ambiguous path for entry: %s/%s", groupPath, title))
+		entryPath := fmt.Sprintf("%s/%s", groupPath, title)
+		// check for presence of entry path key
+		if _, keyExists := credentials[entryPath]; keyExists {
+			// warn in log that an ambiguous path is encountered
+			log.Println(fmt.Sprintf("[WARNING] Ambiguous path for entry: %s", entryPath))
 			log.Println("[WARNING] Only the first entry with this path will be accessible")
 		} else {
-			credentials[pathUsername] = username
-			credentials[pathPassword] = password
-			log.Println(fmt.Sprintf("Group path: %s/%s-<username/password>", groupPath, title))
+			// add entry path key to map
+			credentials[entryPath] = ""
+			// add all values for entry, keyed by group path and title
+			addEntryValues(entryPath, credentials, entry.Values)
 		}
-		// uuid keyed entries
 		// parse uuid bytes and convert to keepass UI format - no dashes and uppercase
 		entryUUID, err := uuid.FromBytes(entry.UUID[:])
-		entryUUIDString := strings.ReplaceAll(strings.ToUpper(entryUUID.String()), "-", "")
-		if err != nil {
-			log.Println(err)
+		if err == nil {
+			entryUUIDString := strings.ReplaceAll(strings.ToUpper(entryUUID.String()), "-", "")
+			addEntryValues(entryUUIDString, credentials, entry.Values)
 		} else {
-			credentials[fmt.Sprintf("%s-title", entryUUIDString)] = title
-			credentials[fmt.Sprintf("%s-username", entryUUIDString)] = username
-			credentials[fmt.Sprintf("%s-password", entryUUIDString)] = password
-			log.Println(fmt.Sprintf("UUID path: %s-<title/username/password>", entryUUIDString))
+			log.Println("[ERROR] Unable to parse UUID bytes for entry, the output map may be incomplete")
 		}
 	}
 	// iterate through subgroups
 	for i := range group.Groups {
 		walk(groupPath, credentials, group.Groups[i])
+	}
+}
+
+func addEntryValues(keyPrefix string, credentials map[string]string, values []gokeepasslib.ValueData) {
+	for _, valueData := range values {
+		// entry value data keys are guaranteed by keepass to be unique
+		key := fmt.Sprintf("%s-%s", keyPrefix, valueData.Key)
+		credentials[key] = valueData.Value.Content
+		log.Println(fmt.Sprintf("Key: %s", key))
 	}
 }
