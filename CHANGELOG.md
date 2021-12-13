@@ -1,3 +1,8 @@
+# v0.2.0
+
+- Added all credential data values to the map (breaking change)
+  - Breaking change due to the internal data value key names used (e.g. `UserName`, `Password`)
+
 # v0.1.1
 
 - Added group path keys for credentials

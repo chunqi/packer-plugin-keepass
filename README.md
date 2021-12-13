@@ -54,7 +54,7 @@ documentation located in the [`docs/`](docs) directory.
 packer {
   required_plugins {
     keepass = {
-      version = ">= 0.1.1"
+      version = ">= 0.2.0"
       source  = "github.com/chunqi/keepass"
     }
   }
