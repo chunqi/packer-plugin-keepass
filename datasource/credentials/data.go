@@ -11,13 +11,16 @@ import (
 	"github.com/hashicorp/hcl/v2/hcldec"
 	"github.com/hashicorp/packer-plugin-sdk/hcl2helper"
 	"github.com/hashicorp/packer-plugin-sdk/template/config"
+	"github.com/hashicorp/packer-plugin-sdk/template/interpolate"
 	"github.com/tobischo/gokeepasslib/v3"
 	"github.com/zclconf/go-cty/cty"
 )
 
 type Config struct {
-	KeepassFile     string `mapstructure:"keepass_file"`
-	KeepassPassword string `mapstructure:"keepass_password"`
+	KeepassFile     string `mapstructure:"keepass_file" required:"true"`
+	KeepassPassword string `mapstructure:"keepass_password" required:"true"`
+
+	ctx interpolate.Context
 }
 
 type Datasource struct {

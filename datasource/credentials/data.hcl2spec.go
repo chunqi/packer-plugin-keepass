@@ -10,8 +10,8 @@ import (
 // FlatConfig is an auto-generated flat version of Config.
 // Where the contents of a field with a `mapstructure:,squash` tag are bubbled up.
 type FlatConfig struct {
-	KeepassFile     *string `mapstructure:"keepass_file" cty:"keepass_file" hcl:"keepass_file"`
-	KeepassPassword *string `mapstructure:"keepass_password" cty:"keepass_password" hcl:"keepass_password"`
+	KeepassFile     *string `mapstructure:"keepass_file" required:"true" cty:"keepass_file" hcl:"keepass_file"`
+	KeepassPassword *string `mapstructure:"keepass_password" required:"true" cty:"keepass_password" hcl:"keepass_password"`
 }
 
 // FlatMapstructure returns a new FlatConfig.
