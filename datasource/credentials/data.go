@@ -4,7 +4,7 @@ package credentials
 import (
 	"fmt"
 	"log"
-	"os"
+	"packer-plugin-keepass/common"
 	"strings"
 
 	"github.com/google/uuid"
@@ -51,15 +51,7 @@ func (d *Datasource) Execute() (cty.Value, error) {
 	output := DatasourceOutput{}
 	emptyOutput := hcl2helper.HCL2ValueFromConfig(output, d.OutputSpec())
 	credentials := map[string]string{}
-	// open the keepass 2 database and decrypt with password
-	file, err := os.Open(d.config.KeepassFile)
-	if err != nil {
-		return emptyOutput, err
-	}
-	db := gokeepasslib.NewDatabase()
-	db.Credentials = gokeepasslib.NewPasswordCredentials(d.config.KeepassPassword)
-	err = gokeepasslib.NewDecoder(file).Decode(db)
-	// handle incorrect password
+	db, err := common.OpenDatabase(d.config.KeepassFile, d.config.KeepassPassword)
 	if err != nil {
 		return emptyOutput, err
 	}

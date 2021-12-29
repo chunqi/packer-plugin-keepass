@@ -5,7 +5,7 @@ package listing
 import (
 	"context"
 	"fmt"
-	"os"
+	"packer-plugin-keepass/common"
 	"strings"
 
 	"github.com/google/uuid"
@@ -48,18 +48,8 @@ var treeSpacer = "    "
 func (p *Provisioner) Provision(_ context.Context, ui packer.Ui, _ packer.Communicator, generatedData map[string]interface{}) error {
 	keepass_file, err := interpolate.Render(p.config.KeepassFile, &p.config.ctx)
 	keepass_password, err := interpolate.Render(p.config.KeepassPassword, &p.config.ctx)
-	// open the keepass 2 database and decrypt with password
-	file, err := os.Open(keepass_file)
+	db, err := common.OpenDatabase(keepass_file, keepass_password)
 	if err != nil {
-		ui.Error(err.Error())
-		return err
-	}
-	db := gokeepasslib.NewDatabase()
-	db.Credentials = gokeepasslib.NewPasswordCredentials(keepass_password)
-	err = gokeepasslib.NewDecoder(file).Decode(db)
-	// handle incorrect password
-	if err != nil {
-		ui.Error(err.Error())
 		return err
 	}
 	ui.Say(fmt.Sprintf("Credentials and attachments listing for: %s", keepass_file))
