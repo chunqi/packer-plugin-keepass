@@ -38,15 +38,16 @@ func (p *Provisioner) Prepare(raws ...interface{}) error {
 	if err != nil {
 		return err
 	}
-	if errs := common.CheckConfig(p.config.KeepassFile, p.config.KeepassPassword); err != nil {
-		return errs
-	}
 	return nil
 }
 
 var treeSpacer = "    "
 
 func (p *Provisioner) Provision(_ context.Context, ui packer.Ui, _ packer.Communicator, generatedData map[string]interface{}) error {
+	// check that the keepass_file and keepass_password config have been provided
+	if errs := common.CheckConfig(p.config.KeepassFile, p.config.KeepassPassword); errs != nil {
+		return errs
+	}
 	db, err := common.OpenDatabase(p.config.KeepassFile, p.config.KeepassPassword)
 	if err != nil {
 		return err
