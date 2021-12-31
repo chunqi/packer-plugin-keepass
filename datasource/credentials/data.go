@@ -40,6 +40,9 @@ func (d *Datasource) Configure(raws ...interface{}) error {
 	if err != nil {
 		return err
 	}
+	if errs := common.CheckConfig(d.config.KeepassFile, d.config.KeepassPassword); errs != nil {
+		return errs
+	}
 	return nil
 }
 

@@ -39,7 +39,9 @@ func (p *Provisioner) Prepare(raws ...interface{}) error {
 	if err != nil {
 		return err
 	}
-
+	if errs := common.CheckConfig(p.config.KeepassFile, p.config.KeepassPassword); err != nil {
+		return errs
+	}
 	return nil
 }
 
