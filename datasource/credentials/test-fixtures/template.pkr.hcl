@@ -1,5 +1,5 @@
 data "keepass-credentials" "test" {
-  keepass_file = "example/example.kdbx"
+  keepass_file = "../../example/example.kdbx"
   keepass_password = "password"
 }
 
@@ -14,8 +14,8 @@ build {
 
   provisioner "shell-local" {
     inline = [
-      "echo username1: ${data.keepass-credentials.test.map["2-username"]}",
-      "echo password1: ${data.keepass-credentials.test.map["2-password"]}",
+      "echo ${data.keepass-credentials.test.map["/example/Sample Entry-UserName"]}",
+      "echo ${data.keepass-credentials.test.map["F1ABA233DAE73E419937F475C593F31C-UserName"]}",
     ]
   }
 }

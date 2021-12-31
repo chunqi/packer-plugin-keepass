@@ -46,14 +46,14 @@ func TestAccKeepassDatasource(t *testing.T) {
 			}
 			logsString := string(logsBytes)
 
-			username2Log := "null.basic-example: username1: Michael321"
-			password2Log := "null.basic-example: password1: 12345"
+			sampleEntry1UsernameLog := "null.basic-example: User Name"
+			sampleEntry2UuidUsernameLog := "null.basic-example: Michael321"
 
-			if matched, _ := regexp.MatchString(username2Log+".*", logsString); !matched {
-				t.Fatalf("logs doesn't contain expected 2-username value %q", logsString)
+			if matched, _ := regexp.MatchString(sampleEntry1UsernameLog+".*", logsString); !matched {
+				t.Fatalf("logs doesn't contain expected Sample Entry username value %q", logsString)
 			}
-			if matched, _ := regexp.MatchString(password2Log+".*", logsString); !matched {
-				t.Fatalf("logs doesn't contain expected 2-password value %q", logsString)
+			if matched, _ := regexp.MatchString(sampleEntry2UuidUsernameLog+".*", logsString); !matched {
+				t.Fatalf("logs doesn't contain expected Sample Entry #2 username value %q", logsString)
 			}
 			return nil
 		},
