@@ -47,13 +47,11 @@ func (p *Provisioner) Prepare(raws ...interface{}) error {
 var treeSpacer = "    "
 
 func (p *Provisioner) Provision(_ context.Context, ui packer.Ui, _ packer.Communicator, generatedData map[string]interface{}) error {
-	keepass_file, err := interpolate.Render(p.config.KeepassFile, &p.config.ctx)
-	keepass_password, err := interpolate.Render(p.config.KeepassPassword, &p.config.ctx)
-	db, err := common.OpenDatabase(keepass_file, keepass_password)
+	db, err := common.OpenDatabase(p.config.KeepassFile, p.config.KeepassPassword)
 	if err != nil {
 		return err
 	}
-	ui.Say(fmt.Sprintf("Credentials and attachments listing for: %s", keepass_file))
+	ui.Say(fmt.Sprintf("Credentials and attachments listing for: %s", p.config.KeepassFile))
 	// walk database and print tree listing of groups and entries
 	groupCallback := func(groupPath string, group gokeepasslib.Group, depth int) {
 		if depth == 0 {
