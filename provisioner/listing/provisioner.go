@@ -44,15 +44,23 @@ func (p *Provisioner) Prepare(raws ...interface{}) error {
 var treeSpacer = "    "
 
 func (p *Provisioner) Provision(_ context.Context, ui packer.Ui, _ packer.Communicator, generatedData map[string]interface{}) error {
+	keepassFile, err := interpolate.Render(p.config.KeepassFile, &p.config.ctx)
+	if err != nil {
+		return fmt.Errorf("Error interpolating keepass_file: %s", err)
+	}
+	keepassPassword, err := interpolate.Render(p.config.KeepassPassword, &p.config.ctx)
+	if err != nil {
+		return fmt.Errorf("Error interpolating keepass_password: %s", err)
+	}
 	// check that the keepass_file and keepass_password config have been provided
-	if errs := common.CheckConfig(p.config.KeepassFile, p.config.KeepassPassword); errs != nil {
+	if errs := common.CheckConfig(keepassFile, keepassPassword); errs != nil {
 		return errs
 	}
-	db, err := common.OpenDatabase(p.config.KeepassFile, p.config.KeepassPassword)
+	db, err := common.OpenDatabase(keepassFile, keepassPassword)
 	if err != nil {
 		return err
 	}
-	ui.Say(fmt.Sprintf("Credentials and attachments listing for: %s", p.config.KeepassFile))
+	ui.Say(fmt.Sprintf("Credentials and attachments listing for: %s", keepassFile))
 	// walk database and print tree listing of groups and entries
 	groupCallback := func(groupPath string, group gokeepasslib.Group, depth int) {
 		if depth == 0 {
