@@ -20,7 +20,7 @@ build {
   sources = ["sources.null.example"]
 
   provisioner "keepass-listing" {
-      keepass_file="example/example.kdbx"
+      keepass_file="example/example2.kdbx"
       keepass_password="${var.keepass_password}"
   }
 }
