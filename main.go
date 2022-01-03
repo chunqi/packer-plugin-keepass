@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"packer-plugin-keepass/datasource/credentials"
+	"packer-plugin-keepass/provisioner/attachment"
 	"packer-plugin-keepass/provisioner/listing"
 
 	"github.com/hashicorp/packer-plugin-sdk/plugin"
@@ -27,6 +28,7 @@ var (
 func main() {
 	pps := plugin.NewSet()
 	pps.RegisterDatasource("credentials", new(credentials.Datasource))
+	pps.RegisterProvisioner("attachment", new(attachment.Provisioner))
 	pps.RegisterProvisioner("listing", new(listing.Provisioner))
 	pps.SetVersion(PluginVersion)
 	err := pps.Run()
