@@ -19,7 +19,7 @@ Then, run [`packer init`](https://www.packer.io/docs/commands/init).
 packer {
   required_plugins {
     keepass = {
-      version = ">= 0.0.1"
+      version = ">= 0.2.0"
       source  = "github.com/chunqi/keepass"
     }
   }
@@ -49,6 +49,11 @@ on [installing a plugin](https://www.packer.io/docs/extending/plugins/#installin
 
 The plugin implements a custom data source:
 
-### Data Sources
+### Datasources
 
-- [data source](/docs/datasources/credentials.mdx) - Use a password protected Keepass 2 file as a data source.
+- [credentials](/docs/datasources/credentials.mdx) - Use the values of credential entries from a KeePass 2 database.
+
+### Provioners
+
+- [attachment](/docs/provisioners/attachment.mdx) - Upload file attachments contained within entries of a KeePass 2 database.
+- [listing](/docs/provisioners/listing.mdx) - Generate a listing of all values and attachments of entries within a KeePass 2 database and the map keys by which to access them.
