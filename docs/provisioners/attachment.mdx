@@ -1,0 +1,64 @@
+---
+description: >
+  The attachment provisioner is used to upload file attachments contained within
+  entries of a KeePass 2 database.
+page_title: Attachment - Provisioners
+nav_title: Attachment
+---
+
+# Attachment
+
+Type: `keepass-attachment`
+
+The attachment provisioner is used to upload file attachments contained within
+entries of a KeePass 2 database.
+
+### Required
+
+- `keepass_file` (string) - Path to the KeePass 2 database.
+- `keepass_password` (string) - Master password for the KeePass 2 database.
+- `attachment_path` (string) - Attachment to be uploaded. Use the listing provisioner to see all file paths.
+- `destination` (string) - Destination path to upload the attachment.
+
+### Example Usage
+
+```hcl
+packer {
+  required_plugins {
+    keepass = {
+      version = ">= 0.2.0"
+      source  = "github.com/chunqi/keepass"
+    }
+  }
+  required_plugins {
+    docker = {
+      version = ">= 0.0.7"
+      source = "github.com/hashicorp/docker"
+    }
+  }
+}
+
+variable "keepass_password" {
+  type = string
+  sensitive = true
+}
+
+source "docker" "alpine" {
+  image  = "alpine:3.15"
+  commit = true
+}
+
+build {
+  name    = "alpine"
+  sources = [
+    "source.docker.alpine"
+  ]
+  provisioner "keepass-attachment" {
+    keepass_file = "example/example.kdbx"
+    keepass_password = "${var.keepass_password}"
+    attachment_path = "/example/Sample Entry-test.txt"
+    destination = "/tmp/attachment.txt"
+  }
+}
+
+```
