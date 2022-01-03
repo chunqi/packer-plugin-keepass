@@ -1,0 +1,52 @@
+---
+description: >
+  The listing provisioner is used to generate a listing of all values and
+  attachments of entries within a KeePass 2 database and the map keys by which
+  to access them.
+page_title: Listing - Provisioners
+nav_title: Listing
+---
+
+# Listing
+
+Type: `keepass-listing`
+
+The listing provisioner is used to generate a listing of all values and
+attachments of entries within a KeePass 2 database and the map keys by which
+to access them.
+
+### Required
+
+- `keepass_file` (string) - Path to the KeePass 2 database.
+- `keepass_password` (string) - Master password for the KeePass 2 database.
+
+### Example Usage
+
+```hcl
+packer {
+  required_plugins {
+    keepass = {
+      version = ">= 0.2.0"
+      source  = "github.com/chunqi/keepass"
+    }
+  }
+}
+
+variable "keepass_password" {
+  type = string
+  sensitive = true
+}
+
+source "null" "example" {
+  communicator = "none"
+}
+
+build {
+  sources = ["sources.null.example"]
+
+  provisioner "keepass-listing" {
+      keepass_file="example/example.kdbx"
+      keepass_password="${var.keepass_password}"
+  }
+}
+```
