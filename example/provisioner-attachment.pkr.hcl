@@ -34,4 +34,10 @@ build {
     attachment_path = "/example/Sample Entry-test.txt"
     destination = "/tmp/attachment.txt"
   }
+  provisioner "keepass-attachment" {
+    keepass_file = "example/example.kdbx"
+    keepass_password = "${var.keepass_password}"
+    attachment_path = "/example/Sample Entry"
+    destination = "/tmp/"
+  }
 }

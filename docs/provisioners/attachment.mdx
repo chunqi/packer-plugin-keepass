@@ -20,6 +20,13 @@ entries of a KeePass 2 database.
 - `attachment_path` (string) - Attachment to be uploaded. Use the listing provisioner to see all file paths.
 - `destination` (string) - Destination path to upload the attachment.
 
+#### Notes
+
+- `attachment_path` - The entry root path can be used to mean upload all file attachments for the entry.
+- `destination`
+  - If the `attachment_path` is a file attachment, its name will be automatically appended if the `destination` is a directory, otherwise `destination` is treated as a literal file path.
+  - If the `attachment_path` is an entry root path, the destination directory will be created.
+
 ### Example Usage
 
 The KeePass master password can be passed in as either a command line argument or as a packer environment variable.
@@ -70,6 +77,11 @@ build {
     attachment_path = "/example/Sample Entry-test.txt"
     destination = "/tmp/attachment.txt"
   }
+  provisioner "keepass-attachment" {
+    keepass_file = "example/example.kdbx"
+    keepass_password = "${var.keepass_password}"
+    attachment_path = "/example/Sample Entry"
+    destination = "/tmp/"
+  }
 }
-
 ```
