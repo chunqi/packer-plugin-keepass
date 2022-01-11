@@ -1,3 +1,7 @@
+# v0.3.1
+- Added the ability to specify an entry root path as the `attachment_path` for the `attachment` provisioner
+  - All file attachments in the entry will be uploaded to the `destination`
+
 # v0.3.0
 
 - Added `listing` and `attachment` provisioners
