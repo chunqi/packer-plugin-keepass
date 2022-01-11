@@ -22,6 +22,17 @@ to access them.
 
 ### Example Usage
 
+The KeePass master password can be passed in as either a command line argument or as a packer environment variable.
+
+```
+$ packer build -var="keepass_password=password" example/provisioner-listing.pkr.hcl
+```
+
+```
+$ export PKR_VAR_keepass_password=password
+$ packer build example/provisioner-listing.pkr.hcl
+```
+
 ```hcl
 packer {
   required_plugins {
